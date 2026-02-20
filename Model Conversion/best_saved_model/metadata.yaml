@@ -1,0 +1,27 @@
+description: Ultralytics YOLO26n model trained on /tmp/dataset/data.yaml
+author: Ultralytics
+date: '2026-02-10T06:34:24.464953'
+version: 8.4.13
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 640
+- 640
+names:
+  0: ANIMAL
+  1: CRACK
+  2: OBSTACLE
+  3: PERSON
+  4: POTHOLE
+  5: VEHICLE
+args:
+  batch: 1
+  fraction: 0.1
+  half: false
+  int8: true
+  nms: false
+channels: 3
+end2end: true
