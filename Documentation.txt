@@ -1,0 +1,103 @@
+ROAD AI SYSTEM – TECHNICAL DOCUMENTATION
+
+1. SYSTEM OVERVIEW
+------------------
+Road AI is an embedded AI-based object detection system designed for real-time road monitoring and driver assistance. The system detects potholes and other obstacles and provides hardware-based alerts.
+
+2. DEVELOPMENT PROCESS
+----------------------
+The model was trained on Kaggle using a Tesla P100 GPU. A large aggregated dataset of approximately 55,000 images was curated from multiple sources including recommended datasets and Roboflow collections.
+
+The dataset was divided into six balanced classes:
+- POTHOLE
+- PERSON
+- ANIMAL
+- VEHICLE
+- OBSTACLE
+- CRACK
+
+Training was conducted for over 100 epochs across multiple experimental runs. Early weaker models were iteratively improved by expanding dataset diversity and refining annotations.
+
+Final validation metrics:
+- Validation Images: 10,959
+- mAP50: 0.72
+- mAP50-95: 0.446
+- Precision: 0.771
+- Recall: 0.637
+
+3. MODEL CONVERSION PIPELINE
+-----------------------------
+After training, the best model (best.pt) underwent structured conversion:
+
+Step 1: PyTorch (best.pt)
+Step 2: Export to ONNX
+Step 3: Convert to TensorFlow SavedModel
+Step 4: Apply INT8 Quantization
+Step 5: Deploy best_int8.tflite to Raspberry Pi 5
+
+Final model size:
+- SavedModel: 31.9 MB
+- INT8 TFLite: 2.7 MB
+
+This conversion ensured:
+- Reduced memory usage
+- Faster inference
+- ARM compatibility
+- Stable embedded deployment
+
+4. SOFTWARE ARCHITECTURE
+------------------------
+The system operates in a continuous loop:
+
+- Capture frame from USB webcam
+- Run inference using YOLO INT8 model
+- Process detections
+- Smooth bounding boxes
+- Smooth confidence values
+- Activate GPIO outputs
+- Update OLED display
+- Log high-confidence images
+- Display annotated frame
+
+Multi-threading is used for:
+- OLED display updates
+- Asynchronous image saving
+
+This prevents blocking operations and maintains stable FPS.
+
+5. HARDWARE INTERFACING
+-----------------------
+Each detected class is mapped to a dedicated GPIO pin controlling an LED.
+
+POTHOLE detection additionally activates a buzzer for 0.5 seconds.
+
+OLED display shows:
+- Detected class label
+- Confidence percentage
+
+The system also monitors CPU temperature and displays FPS for performance tracking.
+
+6. PERFORMANCE OPTIMIZATION
+----------------------------
+- INT8 quantization for reduced computation
+- Bounding box smoothing to reduce flickering
+- Confidence smoothing to stabilize display values
+- Asynchronous logging to avoid frame drops
+- ARM-compatible deployment
+- GPU-trained model optimized for edge inference
+
+7. PROJECT OBJECTIVES FULFILLED
+--------------------------------
+- Real-time pothole detection
+- Multi-class road obstacle detection
+- Visual feedback system
+- Audio alert mechanism
+- Edge AI deployment
+- Efficient embedded optimization
+- Stable real-time performance
+
+8. CONCLUSION
+-------------
+The Road AI system successfully demonstrates real-time, embedded AI deployment for road safety applications. Through dataset expansion, iterative training, model optimization, and hardware integration, a stable and accurate detection system was achieved on Raspberry Pi 5.
+
+The system represents a complete end-to-end AI engineering pipeline from dataset creation to edge deployment.
